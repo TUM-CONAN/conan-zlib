@@ -1,7 +1,7 @@
 from conans import ConanFile
 import os
-from conans.tools import download, unzip, replace_in_file
-from conans import CMake, AutoToolsBuildEnvironment
+from conans.tools import download, unzip
+from conans import CMake
 
 
 class ZlibConan(ConanFile):
@@ -25,38 +25,18 @@ class ZlibConan(ConanFile):
         download("http://downloads.sourceforge.net/project/libpng/zlib/%s/%s" % (self.version, zip_name), zip_name)
         unzip(zip_name)
         os.unlink(zip_name)
-        if self.settings.os != "Windows":
-            self.run("chmod +x ./%s/configure" % self.ZIP_FOLDER_NAME)
 
     def build(self):
         """ Define your project building. You decide the way of building it
             to reuse it later in any other project.
         """
-        if self.settings.os == "Linux" or self.settings.os == "Macos":
-            env = AutoToolsBuildEnvironment(self)
-            env.fpic = True
-            if self.settings.arch == "x86" or self.settings.arch == "x86_64":
-                env.flags.append("-mstackrealign")
-                        
-            if self.settings.os == "Macos":
-                old_str = '-install_name $libdir/$SHAREDLIBM'
-                new_str = '-install_name $SHAREDLIBM'
-                replace_in_file("./%s/configure" % self.ZIP_FOLDER_NAME, old_str, new_str)
-
-            env.configure(configure_dir=self.ZIP_FOLDER_NAME)
-            env.make()
-         
-        else:
-            cmake = CMake(self)
-            if self.settings.os == "Windows":
-                self.run("IF not exist _build mkdir _build")
-            else:
-                self.run("mkdir _build")
-            cd_build = "cd _build"
-            self.output.warn('%s && cmake .. %s' % (cd_build, cmake.command_line))
-            self.run('%s && cmake .. %s' % (cd_build, cmake.command_line))
-            self.output.warn("%s && cmake --build . %s" % (cd_build, cmake.build_config))
-            self.run("%s && cmake --build . %s" % (cd_build, cmake.build_config))
+        defs = {}
+        if self.options.shared:
+            defs['BUILD_SHARED_LIBS'] = 'ON'
+        cmake = CMake(self)
+        cmake.configure(source_dir=self.ZIP_FOLDER_NAME, build_dir="_build", defs=defs)
+        cmake.build()
+        cmake.install()
 
     def package(self):
         """ Define your conan structure: headers, libs, bins and data. After building your
