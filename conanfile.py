@@ -1,7 +1,7 @@
 from conans import ConanFile
 import os
 from conans.tools import download, unzip, replace_in_file
-from conans import CMake#, ConfigureEnvironment
+from conans import CMake, AutoToolsBuildEnvironment
 
 
 class ZlibConan(ConanFile):
@@ -33,7 +33,7 @@ class ZlibConan(ConanFile):
             to reuse it later in any other project.
         """
         if self.settings.os == "Linux" or self.settings.os == "Macos":
-            env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
+            env = AutoToolsBuildEnvironment(self)
             env_line = env.command_line_env.replace('CFLAGS="', 'CFLAGS="-fPIC ')
             if self.settings.arch == "x86" or self.settings.arch == "x86_64":
                 env_line = env_line.replace('CFLAGS="', 'CFLAGS="-mstackrealign ')
