@@ -25,17 +25,16 @@ class ZlibConan(ConanFile):
         download("http://downloads.sourceforge.net/project/libpng/zlib/%s/%s" % (self.version, zip_name), zip_name)
         unzip(zip_name)
         os.unlink(zip_name)
+        os.rename(self.ZIP_FOLDER_NAME, "sources")
 
     def build(self):
         """ Define your project building. You decide the way of building it
             to reuse it later in any other project.
         """
-        defs = {}
-        if self.options.shared:
-            defs['BUILD_SHARED_LIBS'] = 'ON'
         cmake = CMake(self)
-        cmake.configure(source_dir="%s" % self.ZIP_FOLDER_NAME, build_dir="_build", defs=defs)
-        cmake.build(build_dir="_build")
+        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.configure()
+        cmake.build()
         cmake.install()
 
     def package(self):
@@ -45,31 +44,6 @@ class ZlibConan(ConanFile):
         # Copy findZLIB.cmake to package
         self.copy("FindZLIB.cmake", ".", ".")
         
-        # Copying zlib.h, zutil.h, zconf.h
-        self.copy("*.h", "include", "%s" % (self.ZIP_FOLDER_NAME), keep_path=False)
-        self.copy("*.h", "include", "%s" % ("_build"), keep_path=False)
-
-        # Copying static and dynamic libs
-        if self.settings.os == "Windows":
-            if self.options.shared:
-                self.copy(pattern="*.dll", dst="bin", src="_build", keep_path=False)
-                self.copy(pattern="*zlibd.lib", dst="lib", src="_build", keep_path=False)
-                self.copy(pattern="*zlib.lib", dst="lib", src="_build", keep_path=False)
-                self.copy(pattern="*zlib.lib", dst="lib", src="_build", keep_path=False)
-                self.copy(pattern="*zlib.dll.a", dst="lib", src="_build", keep_path=False)
-            else:
-                self.copy(pattern="*zlibstaticd.*", dst="lib", src="_build", keep_path=False)
-                self.copy(pattern="*zlibstatic.*", dst="lib", src="_build", keep_path=False)
-        else:
-            if self.options.shared:
-                if self.settings.os == "Macos":
-                    self.copy(pattern="*.dylib", dst="lib", keep_path=False)
-                else:
-                    self.copy(pattern="*.so*", dst="lib", src=self.ZIP_FOLDER_NAME, keep_path=False)
-            else:
-                self.copy(pattern="*.a", dst="lib", src="%s/_build" % self.ZIP_FOLDER_NAME, keep_path=False)
-                self.copy(pattern="*.a", dst="lib", src=self.ZIP_FOLDER_NAME, keep_path=False)
-
     def package_info(self):
         if self.settings.os == "Windows":
             if self.options.shared:
