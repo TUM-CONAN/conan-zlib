@@ -34,8 +34,8 @@ class ZlibConan(ConanFile):
         if self.options.shared:
             defs['BUILD_SHARED_LIBS'] = 'ON'
         cmake = CMake(self)
-        cmake.configure(source_dir="./%s" % self.ZIP_FOLDER_NAME, build_dir="./_build", defs=defs)
-        cmake.build()
+        cmake.configure(source_dir="%s" % self.ZIP_FOLDER_NAME, build_dir="_build", defs=defs)
+        cmake.build(build_dir="_build")
         cmake.install()
 
     def package(self):
