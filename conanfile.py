@@ -34,19 +34,17 @@ class ZlibConan(ConanFile):
         """
         if self.settings.os == "Linux" or self.settings.os == "Macos":
             env = AutoToolsBuildEnvironment(self)
-            env_line = env.command_line_env.replace('CFLAGS="', 'CFLAGS="-fPIC ')
+            env.fpic = True
             if self.settings.arch == "x86" or self.settings.arch == "x86_64":
-                env_line = env_line.replace('CFLAGS="', 'CFLAGS="-mstackrealign ')
-            self.output.warn(env_line)
+                env.flags.append("-mstackrealign")
                         
             if self.settings.os == "Macos":
                 old_str = '-install_name $libdir/$SHAREDLIBM'
                 new_str = '-install_name $SHAREDLIBM'
                 replace_in_file("./%s/configure" % self.ZIP_FOLDER_NAME, old_str, new_str)
-                     
-            self.run("cd %s && %s ./configure" % (self.ZIP_FOLDER_NAME, env_line))
-            #self.run("cd %s && %s make check" % (self.ZIP_FOLDER_NAME, env.command_line_env))
-            self.run("cd %s && %s make" % (self.ZIP_FOLDER_NAME, env_line))
+
+            env.configure(configure_dir=self.ZIP_FOLDER_NAME)
+            env.make()
          
         else:
             cmake = CMake(self)
