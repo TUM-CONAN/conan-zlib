@@ -2,8 +2,6 @@
 
 [Conan.io](https://conan.io) package for ZLIB library. 
 
-The packages generated with this **conanfile** can be found in [conan.io](https://conan.io/source/zlib/1.2.11/ulricheck/stable).
-
 ## Build packages
 
     $ pip install conan_package_tools
@@ -11,20 +9,20 @@ The packages generated with this **conanfile** can be found in [conan.io](https:
     
 ## Upload packages to server
 
-    $ conan upload zlib/1.2.11@ulricheck/stable --all
+    $ conan upload zlib/1.2.11@camposs/stable --all
     
 ## Reuse the packages
 
 ### Basic setup
 
-    $ conan install zlib/1.2.11@ulricheck/stable
+    $ conan install zlib/1.2.11@camposs/stable
     
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
     
     [requires]
-    zlib/1.2.11@ulricheck/stable
+    zlib/1.2.11@camposs/stable
 
     [options]
     zlib:shared=true # false
