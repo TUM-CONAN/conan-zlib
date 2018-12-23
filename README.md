@@ -10,14 +10,14 @@
 
 ### Basic setup
 
-    $ conan install zlib/1.2.11@camposs/stable
+    $ conan install zlib/1.2.12@camposs/stable
     
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
     
     [requires]
-    zlib/1.2.11@camposs/stable
+    zlib/1.2.12@camposs/stable
 
     [options]
     zlib:shared=true # false
@@ -42,4 +42,4 @@ The example below shows the commands used to publish to campar conan repository.
 
 ## Upload packages to server
 
-    $ conan upload zlib/1.2.11@camposs/stable --all -r camposs    
+    $ conan upload zlib/1.2.12@camposs/stable --all -r camposs    

@@ -1,7 +1,7 @@
 
 env:
    global:
-     - CONAN_REFERENCE: "zlib/1.2.11"
+     - CONAN_REFERENCE: "zlib/1.2.12"
      - CONAN_USERNAME: "camposs"
      - CONAN_LOGIN_USERNAME: "camposs"
      - CONAN_CHANNEL: "stable"
