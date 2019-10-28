@@ -22,7 +22,7 @@ class ZlibConan(ConanFile):
 
     def source(self):
         zip_name = "zlib-%s.tar.gz" % self.version
-        download("http://downloads.sourceforge.net/project/libpng/zlib/%s/%s" % (self.version, zip_name), zip_name)
+        download("http://zlib.net/%s" % (zip_name), zip_name)
         unzip(zip_name)
         os.unlink(zip_name)
         os.rename(self.ZIP_FOLDER_NAME, "sources")
